@@ -1,0 +1,251 @@
+<div class="main-content">
+  <div class="page-content">
+     <mat-card class="cardWithShadow">
+      <mat-card-content>
+        <div class="chart-container mb-4">
+          <apx-chart
+            [series]="budgetChart.series"
+            [chart]="budgetChart.chart"
+            [xaxis]="budgetChart.xaxis"
+            [yaxis]="budgetChart.yaxis"
+            [plotOptions]="budgetChart.plotOptions"
+            [dataLabels]="budgetChart.dataLabels"
+            [stroke]="budgetChart.stroke"
+            [markers]="budgetChart.markers"
+            [legend]="budgetChart.legend"
+            [tooltip]="budgetChart.tooltip"
+            [grid]="budgetChart.grid"
+            [responsive]="budgetChart.responsive"
+          ></apx-chart>
+        </div>
+    <!-- Header Section -->
+    <div class="d-flex w-100 align-items-center mb-4">
+      <mat-card-title class="mb-0">Budget Management</mat-card-title>
+      <div class="m-l-auto">
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Budget actions">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="exportToCSV()">
+            <mat-icon>download</mat-icon>
+            <span>Export CSV</span>
+          </button>
+          <button mat-menu-item (click)="clearSearch()">
+            <mat-icon>filter_alt_off</mat-icon>
+            <span>Clear Filters</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Search Projects</mat-label>
+          <input matInput [(ngModel)]="searchKeyword" (input)="search()">
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="selectedStatus" (selectionChange)="searchFilters()">
+            <mat-option value="">All Statuses</mat-option>
+            <mat-option *ngFor="let status of statusOptions" [value]="status">
+              {{status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="rangePicker">
+            <input matStartDate [(ngModel)]="createdAt" placeholder="Start date">
+            <input matEndDate [(ngModel)]="updatedAt" placeholder="End date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangePicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Budget Status</mat-label>
+          <mat-select [(ngModel)]="selectedBudgetStatus" (selectionChange)="searchFilters()">
+            <mat-option value="">All Statuses</mat-option>
+            <mat-option *ngFor="let status of budgetStatusOptions" [value]="status">
+              {{status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Budget Table -->
+    <div class="table-responsive">
+      <table mat-table [dataSource]="filteredBudgets" class="mat-elevation-z1">
+        <!-- Project Name Column -->
+        <ng-container matColumnDef="projectName">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('projectName')">
+            Project Name
+            <mat-icon *ngIf="sortColumn === 'projectName'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">{{budget.projectName}}</td>
+        </ng-container>
+
+        <!-- Amount Columns -->
+        <ng-container matColumnDef="amounts">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Amounts</th>
+          <td mat-cell *matCellDef="let budget" class="text-center">
+            <div class="d-flex justify-content-around">
+              <div>
+                <div class="small text-muted">Allocated</div>
+                <div>{{budget.allocatedAmount | currency: budget.currency}}</div>
+              </div>
+              <div>
+                <div class="small text-muted">Spent</div>
+                <div>{{budget.spentAmount | currency: budget.currency}}</div>
+              </div>
+              <div>
+                <div class="small text-muted">Remaining</div>
+                <div>{{budget.remainingAmount | currency: budget.currency}}</div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('status')">
+            Status
+            <mat-icon *ngIf="sortColumn === 'status'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">
+            <mat-chip [ngClass]="budget.status | status">
+              {{budget.status | titlecase}}
+            </mat-chip>
+          </td>
+        </ng-container>
+        <!-- Transaction Column -->
+        <ng-container matColumnDef="transaction">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('transaction')">
+            Transaction
+            <mat-icon *ngIf="sortColumn === 'transaction'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">{{budget.transaction}}</td>
+        </ng-container>
+
+        <!-- Approval Column -->
+        <ng-container matColumnDef="approval">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('approval')">
+            Approval
+            <mat-icon *ngIf="sortColumn === 'approval'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">{{budget.approval}}</td>
+        </ng-container>
+
+        <!-- Currency Column -->
+        <ng-container matColumnDef="currency">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('currency')">
+            Currency
+            <mat-icon *ngIf="sortColumn === 'currency'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">{{budget.currency | uppercase}}</td>
+        </ng-container>
+
+        <!-- Budget Status Column -->
+        <ng-container matColumnDef="budgetStatus">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('budgetStatus')">
+            Budget Status
+            <mat-icon *ngIf="sortColumn === 'budgetStatus'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">
+            <mat-chip [ngClass]="budget.budgetStatus | status">
+              {{budget.budgetStatus | titlecase}}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Created At Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('createdAt')">
+            Created At
+            <mat-icon *ngIf="sortColumn === 'createdAt'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">{{budget.createdAt | date:'medium'}}</td>
+        </ng-container>
+
+        <!-- Updated At Column -->
+        <ng-container matColumnDef="updatedAt">
+          <th mat-header-cell *matHeaderCellDef (click)="sort('updatedAt')">
+            Updated At
+            <mat-icon *ngIf="sortColumn === 'updatedAt'">
+              {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let budget">{{budget.updatedAt | date:'medium'}}</td>
+        </ng-container>
+
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-right">Actions</th>
+          <td mat-cell *matCellDef="let budget" class="text-right">
+            <button mat-icon-button color="primary" [routerLink]="['/financial/budget/edit', budget.id]">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="setBudgetToDelete(budget.id); confirmDeleteBudget()">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" (click)="viewDetailsAndForecast(budget.id)">
+              <mat-icon>info</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Loading State -->
+        <tr *matNoDataRow>
+          <td colspan="4" class="text-center py-4">
+            <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" diameter="40"></mat-progress-spinner>
+            <div *ngIf="!isLoading" class="text-muted">
+              <mat-icon>inbox</mat-icon>
+              <div>{{errorMessage || 'No budgets found'}}</div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Create New Button -->
+    <mat-card-actions class="mt-4">
+      <button mat-raised-button color="primary" routerLink="/financial/budget/new">
+        <mat-icon>add_circle</mat-icon>
+        Create New Budget
+      </button>
+    </mat-card-actions>
+  </mat-card-content>
+     </mat-card>
+  </div>
+</div>
+<router-outlet></router-outlet> <!-- For child routes (new/edit forms) -->
+

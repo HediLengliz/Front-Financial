@@ -1,0 +1,115 @@
+<mat-card class="cardWithShadow">
+  <mat-card-title>Edit Budget</mat-card-title>
+  <mat-card-content>
+    <form (ngSubmit)="updateBudget()" #form="ngForm" class="budget-form">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Project Name</mat-label>
+            <input matInput name="projectName" required [(ngModel)]="budget.projectName">
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Currency</mat-label>
+            <mat-select name="currency" required [(ngModel)]="budget.currency">
+              <mat-option value="USD">USD</mat-option>
+              <mat-option value="EUR">EUR</mat-option>
+              <mat-option value="GBP">GBP</mat-option>
+              <mat-option value="JPY">JPY</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Allocated Amount</mat-label>
+            <input matInput type="number" name="allocatedAmount" required [(ngModel)]="budget.allocatedAmount" pattern="^\d+(\.\d{1,2})?$">
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Spent Amount</mat-label>
+            <input matInput type="number" name="spentAmount" required [(ngModel)]="budget.spentAmount" pattern="^\d+(\.\d{1,2})?$">
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Remaining Amount</mat-label>
+            <input matInput type="number" name="remainingAmount" required [(ngModel)]="budget.remainingAmount" pattern="^-?\d+(\.\d{1,2})?$">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Status</mat-label>
+            <mat-select name="status" required [(ngModel)]="budget.status">
+              <mat-option value="Active">Active</mat-option>
+              <mat-option value="Adjusted">Adjusted</mat-option>
+              <mat-option value="Closed">Closed</mat-option>
+              <mat-option value="Cancelled">Cancelled</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Transaction</mat-label>
+            <mat-select name="transaction" required [(ngModel)]="budget.transaction">
+              <mat-option value="Pending">Pending</mat-option>
+              <mat-option value="Failed">Failed</mat-option>
+              <mat-option value="Success">Success</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Budget Status</mat-label>
+            <mat-select name="budgetStatus" required [(ngModel)]="budget.budgetStatus">
+              <mat-option value="Insufficient">Insufficient</mat-option>
+              <mat-option value="Sufficient">Sufficient</mat-option>
+              <mat-option value="Exceeded">Exceeded</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Approval</mat-label>
+            <mat-select name="approval" required [(ngModel)]="budget.approval">
+              <mat-option value="APPROVED">APPROVED</mat-option>
+              <mat-option value="PENDING">PENDING</mat-option>
+              <mat-option value="REJECTED">REJECTED</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Created At</mat-label>
+            <input matInput [matDatepicker]="picker1" name="createdAt" required [(ngModel)]="budget.createdAt">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Updated At</mat-label>
+            <input matInput [matDatepicker]="picker2" name="updatedAt" required [(ngModel)]="budget.updatedAt">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div class="mt-4 d-flex justify-content-end">
+        <button mat-stroked-button color="warn" type="button" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon> Back
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" class="ms-2">
+          <mat-icon>save</mat-icon> Update
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

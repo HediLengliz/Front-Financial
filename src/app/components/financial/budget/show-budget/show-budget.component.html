@@ -1,0 +1,39 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="d-flex align-items-center justify-content-between w-100 mb-3">
+      <mat-card-title>Budget Overview</mat-card-title>
+      <button mat-icon-button color="inherit" aria-label="More options">
+        <mat-icon class="f-s-24">more_vert</mat-icon>
+      </button>
+    </div>
+
+    <p class="mb-4">Manage and track your project budgets efficiently</p>
+
+    <div class="budget-details mb-4">
+      <p><strong>Project:</strong> {{ budget?.projectName }}</p>
+      <p><strong>Allocated:</strong> {{ budget?.allocatedAmount | currency: budget!.currency }}</p>
+      <p><strong>Spent:</strong> {{ budget?.spentAmount | currency: budget!.currency }}</p>
+      <p><strong>Remaining:</strong> {{ budget?.remainingAmount | currency: budget!.currency }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span class="badge" [ngClass]="getStatusClass(budget?.status)">
+          {{ budget?.status }}
+        </span>
+      </p>
+      <p><strong>Currency:</strong> {{ budget?.currency }}</p>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-4">
+      <div class="chart-container" style="flex: 1 1 500px;">
+        <mat-card class="shadow-sm p-3">
+          <mat-card-title class="text-center">Budget Forecasting Chart</mat-card-title>
+          <canvas id="budgetChart" style="width: 100%; height: 300px;"></canvas>
+        </mat-card>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button mat-raised-button color="primary" (click)="goBack()">Back to Budget Management</button>
+    </div>
+  </mat-card-content>
+</mat-card>
