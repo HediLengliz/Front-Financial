@@ -145,6 +145,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🌐 Social Media
 
-- 💼 LinkedIn: [Buildini – ConstructionTech Innovation](https://www.linkedin.com/posts/ahmed-jaouadi-330522246_constructiontech-innovation-buildini-activity-7328166806127325184-4LVO?utm_source=share&utm_medium=member_desktop&rcm=ACoAADiajrQBzc6TN2x3HCHS7-t7wujnjEgsVDg)
+- 💼 LinkedIn: [Buildini – ConstructionTech Innovation](https://www.linkedin.com/posts/hedi-lengliz_constructiontech-innovation-buildini-activity-7331334827016605696-haFl?utm_source=share&utm_medium=member_desktop&rcm=ACoAADiajrQBzc6TN2x3HCHS7-t7wujnjEgsVDg)
 
 ---
